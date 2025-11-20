@@ -1,0 +1,72 @@
+# =========================================
+# PYTHON
+# =========================================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environment
+env/
+venv/
+ENV/
+.venv/
+
+# =========================================
+# DJANGO
+# =========================================
+# SQLite database
+*.sqlite3
+
+# Django secret / private keys
+secret.key
+
+# Logs
+*.log
+
+# Media & static (generated)
+media/
+staticfiles/
+static/
+
+# =========================================
+# ENVIRONMENT / CONFIG
+# =========================================
+*.env
+.env.*
+*.env.local
+*.env.dev
+*.env.prod
+!example.env
+
+# =========================================
+# OS / EDITOR
+# =========================================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# =========================================
+# PACKAGE / BUILD
+# =========================================
+build/
+dist/
+*.egg-info/
+
+# =========================================
+# TEMPORARY FILES
+# =========================================
+tmp/
+temp/
+.cache/

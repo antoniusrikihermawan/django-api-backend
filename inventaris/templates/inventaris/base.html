@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistem Gudang Modern</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6" /* Biru Modern */,
+              dark: "#1E293B" /* Navy Gelap */,
+              light: "#F1F5F9" /* Abu Terang Background */,
+              white: "#FFFFFF" /* Putih */,
+              accent: "#0EA5E9" /* Sky Blue */,
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f1f5f9;
+      }
+    </style>
+  </head>
+  <body class="text-slate-800">
+    <nav class="bg-dark text-white shadow-lg">
+      <div
+        class="container mx-auto px-6 py-4 flex justify-between items-center"
+      >
+        <a href="#" class="text-2xl font-bold flex items-center gap-2">
+          <svg
+            class="w-8 h-8 text-accent"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+            ></path>
+          </svg>
+          Gudang<span class="text-accent">Pro</span>
+        </a>
+        <div class="space-x-4">
+          <a
+            href="{% url 'daftar_barang' %}"
+            class="hover:text-accent transition"
+            >Dashboard</a
+          >
+          <a
+            href="{% url 'daftar_riwayat' %}"
+            class="hover:text-accent transition"
+            >Riwayat</a
+          >
+          <a href="#" class="hover:text-accent transition">Logout</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-6 py-8">
+      {% block content %} {% endblock %}
+    </main>
+
+    <footer class="text-center py-6 text-slate-500 text-sm">
+      &copy; 2025 Sistem Manajemen Inventaris. Built with Django & Tailwind.
+    </footer>
+  </body>
+</html>
