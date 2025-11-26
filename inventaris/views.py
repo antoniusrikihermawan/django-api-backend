@@ -30,8 +30,8 @@ class BarangDeleteView(DeleteView):
     success_url = reverse_lazy('daftar_barang')
     
     # Delete tanpa halaman konfirmasi (Direct Delete dari tombol)
-    def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
+    # def get(self, request, *args, **kwargs):
+    #     return self.post(request, *args, **kwargs)
     
 # --- VIEW RIWAYAT ---
 class RiwayatListView(ListView):
