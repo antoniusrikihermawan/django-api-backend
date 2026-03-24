@@ -1,79 +1,41 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from .forms import BarangForm, RiwayatForm
-from rest_framework import viewsets
-from .models import Barang, RiwayatTransaksi
-from .serializers import BarangSerializer, RiwayatTransaksiSerializer
+from rest_framework import viewsets, permissions
+from .models import Kategori, Supplier, Barang, TransaksiPenjualan, Transaksi
+from .serializers import (
+    KategoriSerializer, 
+    SupplierSerializer, 
+    BarangSerializer, 
+    TransaksiPenjualanSerializer,
+    TransaksiSerializer
+)
+from .permissions import IsStaffOrReadOnly
 
-class BarangListView(ListView):
-    model = Barang
-    template_name = 'inventaris/index.html'
-    context_object_name = 'barang_list'
-    ordering = ['-tanggal_masuk']
+# 1. ViewSet Kategori
+class KategoriViewSet(viewsets.ModelViewSet):
+    queryset = Kategori.objects.all().order_by('id')
+    serializer_class = KategoriSerializer
+    permission_classes = [IsStaffOrReadOnly]
 
-class BarangCreateView(CreateView):
-    model = Barang
-    form_class = BarangForm
-    template_name = 'inventaris/form_barang.html'
-    success_url = reverse_lazy('daftar_barang')
+# 2. ViewSet Supplier
+class SupplierViewSet(viewsets.ModelViewSet):
+    queryset = Supplier.objects.all().order_by('id')
+    serializer_class = SupplierSerializer
+    permission_classes = [IsStaffOrReadOnly]
 
-class BarangUpdateView(UpdateView):
-    model = Barang
-    form_class = BarangForm
-    template_name = 'inventaris/form_barang.html'
-    success_url = reverse_lazy('daftar_barang')
-
-class BarangDeleteView(DeleteView):
-    model = Barang
-    template_name = 'inventaris/confirm_delete.html' 
-    success_url = reverse_lazy('daftar_barang')
-    
-    # Delete tanpa halaman konfirmasi (Direct Delete dari tombol)
-    # def get(self, request, *args, **kwargs):
-    #     return self.post(request, *args, **kwargs)
-    
-# --- VIEW RIWAYAT ---
-class RiwayatListView(ListView):
-    model = RiwayatTransaksi
-    template_name = 'inventaris/riwayat_list.html'
-    context_object_name = 'riwayat_list'
-    ordering = ['-tanggal'] 
-
-class RiwayatCreateView(CreateView):
-    model = RiwayatTransaksi
-    form_class = RiwayatForm
-    template_name = 'inventaris/form_riwayat.html'
-    success_url = reverse_lazy('daftar_riwayat')
-
-    # UPDATE STOK DI WEBSITE
-    def form_valid(self, form):
-        # 1. Simpan data transaksi
-        transaksi = form.save(commit=False)
-        
-        # 2. Ambil barang yang dipilih
-        barang = transaksi.barang
-        
-        # 3. Cek Validasi Stok untuk Barang Keluar
-        if transaksi.jenis == 'KELUAR' and barang.jumlah_stok < transaksi.jumlah:
-            form.add_error('jumlah', 'Stok tidak cukup untuk transaksi keluar!')
-            return self.form_invalid(form)
-
-        # 4. Update Stok
-        if transaksi.jenis == 'MASUK':
-            barang.jumlah_stok += transaksi.jumlah
-        else:
-            barang.jumlah_stok -= transaksi.jumlah
-            
-        barang.save()     
-        transaksi.save() 
-        return redirect(self.success_url)
-
+# 3. ViewSet Barang (Ini yang tadi error ImproperlyConfigured)
 class BarangViewSet(viewsets.ModelViewSet):
-    queryset = Barang.objects.all().order_by('-tanggal_masuk')
+    queryset = Barang.objects.all().order_by('id')
     serializer_class = BarangSerializer
+    permission_classes = [IsStaffOrReadOnly]
+
+# 4. ViewSet Transaksi
+class TransaksiPenjualanViewSet(viewsets.ModelViewSet):
+    queryset = TransaksiPenjualan.objects.all().order_by('-tanggal')
+    serializer_class = TransaksiPenjualanSerializer
+    permission_classes = [IsStaffOrReadOnly]
     
-class RiwayatTransaksiViewSet(viewsets.ModelViewSet):
-    queryset = RiwayatTransaksi.objects.all().order_by('-tanggal')
-    serializer_class = RiwayatTransaksiSerializer
-    filterset_fields = ['jenis', 'barang']
+
+# 5. ViewSet Transaksi Pembelian
+class TransaksiViewSet(viewsets.ModelViewSet):
+    queryset = Transaksi.objects.all().order_by('-tanggal') # Urutkan dari yang terbaru
+    serializer_class = TransaksiSerializer
+    permission_classes = [permissions.IsAuthenticated] # Hanya user login yang bisa akses

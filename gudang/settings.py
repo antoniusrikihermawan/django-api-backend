@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,8 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
     'inventaris',
+    'rest_framework',
+    'rest_framework.authtoken', # Untuk Token Auth
+    'corsheaders',              # Untuk koneksi ke React
+    'drf_spectacular',          # Dokumentasi API
+    'django_filters',           # Untuk Searching
 ]
 
 UNFOLD = {
@@ -49,6 +54,8 @@ UNFOLD = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', # Paling atas
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -131,3 +138,24 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication', # Syarat No. 1
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination', # Syarat No. 4
+    'PAGE_SIZE': 10,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API Inventaris & Point of Sales (Kasir)',
+    'DESCRIPTION': 'Dokumentasi API lengkap untuk manajemen stok barang, supplier, dan transaksi penjualan toko.',
+    'VERSION': '1.0.0',
+}
+
+CORS_ALLOW_ALL_ORIGINS = True # Untuk development React
+
+# Tambahkan konfigurasi MEDIA (Untuk file upload user)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
